@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+<meta charset="UTF-8">
+<title> Group 3 | Team Members</title>
+</head>
+
+<body>
+<h3>Group 3 Team Members</h3>
+{% if details %}
+    {% for detail in details  %}
+        <li><strong>{{detail}}</strong>
+        <ol>Email: {{ detail.email }}</ol>
+        <ol>University Roll Number: {{ detail.rollNum }}</ol>
+        </li>
+    {% endfor %}
+{% else %}
+    <br>
+    <strong> No items in this Category! </strong>
+{% endif %}
+<p><a href="{% url 'index'%}">Index Page</a></p>
+</body>
+</html>

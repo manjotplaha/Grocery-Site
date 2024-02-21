@@ -77,3 +77,15 @@ class OrderItem(models.Model):
 
     def total_price(self):
         return self.quantity*self.item.price
+
+class TeamMembers(models.Model):
+    first_name = models.CharField(max_length=150)
+    last_name = models.CharField(max_length=150)
+    email = models.EmailField(null = True, blank = True)
+    rollNum = models.PositiveIntegerField()
+
+    def __str__(self):
+        return f'{self.first_name} {self.last_name}'
+
+    class Meta:
+        ordering = ['id']

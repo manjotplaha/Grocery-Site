@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.views import View
 
-from .models import Type, Item
+from .models import Type, Item, TeamMembers
 import calendar
 from django.shortcuts import render
 
@@ -28,87 +28,36 @@ def index(request):
     type_list = Type.objects.all().order_by('id')[:10]
     return render(request, 'myapp/index.html', {'type_list': type_list})
 
-def about(request, yr, mth):
-    response = HttpResponse()
-    mth_name = calendar.month_name[mth]
-    heading1 = '<p>This is an Online Grocery Store '+str(mth_name)+ str(yr)+'</p>'
-    response.write(heading1)
-    return response
+# def about(request, yr, mth):
+#     response = HttpResponse()
+#     mth_name = calendar.month_name[mth]
+#     heading1 = '<p>This is an Online Grocery Store '+str(mth_name)+ str(yr)+'</p>'
+#     response.write(heading1)
+#     return response
 
+def about(request, yr, mth):
+    mth_name = calendar.month_name[mth]
+    return render(request, 'myapp/about.html',{'yr':yr,'mth_name':mth_name})    #Yes, I am passing Year and month te template which has been taken as a input fromm the user, further the month name is calculated based on month number entered
 
 class Detail(View):     #CBV for Part 3
 
     def get(self, request, type_no):
-        response = HttpResponse()
-        try:
-            selected_type = Type.objects.get(pk=type_no)
-            items = Item.objects.filter(type=selected_type)
-            for i in items:
-                para = '<p>' + str(i.stock) + '</p>'
-                response.write(para)
-            return response
-        except:
-            return HttpResponse(status=404)
+        selected_type = Type.objects.get(pk=type_no)
+        items = Item.objects.filter(type=selected_type)
+        return render(request, 'myapp/detail.html', {'selected_type': selected_type,'items': items})        #"""To Answer part 5 ofe part, i am passing the selected_type and items list as variable to the template, these would be later traversed and displayed in the template."""
+        # response = HttpResponse()
+        #
+        # for i in items:
+        #     para = '<p>' + str(i.stock) + '</p>'
+        #     response.write(para)
+        # return response
 
-# from django.shortcuts import render
-# from django.http import HttpResponse
-# from django.views import View
-# from django.shortcuts import get_object_or_404
-# from .models import Type, Item
-# import calendar
-#
-#
-# # Create your views here.
-# def index(request):
-#     type_list = Type.objects.all().order_by('id')
-#     response = HttpResponse()
-#     #heading1 = '<p>' + 'Different Types: ' + '</p>'
-#     #response.write(heading1)                #send something back when user requests
-#     # for type in type_list:
-#     #     para = '<p>'+ str(type.id) + ': ' + str(type) + '</p>'
-#     #     response.write(para)
-#     # items_list = Item.objects.all()
-#     items = Item.objects.order_by('-price')
-#     heading2 = '<p>' + 'Top 10 items in descending order of price: ' + '</p>'
-#     response.write(heading2)
-#     for item in range(10):
-#         para = '<p>'+str(items[item]) +'</p>'
-#         response.write(para)
-#     return response
-#
-#
-# def about(request):
-#     response = HttpResponse("This is an Online Grocery Store")
-#     return response
-#
-#
-# def about_with_params(request, yr, mth):
-#     response = HttpResponse()
-#     mth_name = calendar.month_name[mth]
-#     heading3 = '<p>This is an Online Grocery Store - '+str(mth_name)+ ' ' + str(yr)+'</p>'
-#     response.write(heading3)
-#     return response
-#
-# def detail(request, type_no):
-#     selected_type = get_object_or_404(Type, id=type_no)
-#     items = Item.objects.filter(type=selected_type)
-#     response = HttpResponse()
-#     heading = '<p>' + f'Items for Type {type_no}: ' + '</p>'
-#     response.write(heading)
-#
-#     for item in items:
-#         item_para = '<p>' + str(item) + '</p>'
-#         response.write(item_para)
-#     return response
-#
-# def function_based_view(request):
-#     return HttpResponse("This is a Function-Based View.")
-#
-# class Class_based_view(View):
-#     def get(self, request):
-#         return HttpResponse("This is a Class-Based View.")
-#
-#
+def aboutUs(request):
+    response = HttpResponse()
+    heading1 = '<p> This is an Online Grocery Store </p>'
+    response.write(heading1)
+    return response
+
 # # Comments explaining the differences during conversion:
 #
 # # 1. Function-Based View (FBV) is a simple function that takes a request and returns a response.
@@ -118,3 +67,9 @@ class Detail(View):     #CBV for Part 3
 # # 5. CBV allows for more organized code with different methods for different HTTP methods.
 # # 6. CBV can be extended more easily, for example, by adding additional methods for different actions.
 # # 7. CBV is often more reusable as the behavior is encapsulated within the class.
+
+# lAB 6 PART 2
+class TeamMembersView(View):
+    def get(self, request):
+        details = TeamMembers.objects.all().order_by('-first_name')
+        return render(request, 'myapp/teamDetailView.html',{'details':details})
