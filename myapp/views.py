@@ -28,6 +28,11 @@ def index(request):
     type_list = Type.objects.all().order_by('id')[:10]
     return render(request, 'myapp/index.html', {'type_list': type_list})
 
+# Lab 6 | PART 1| iii
+
+# Yes, we are passing type_list as context variable, this is an argument which is passed on to the template
+# for viewing, this list would be iterated to showcase the data in the template.
+
 # def about(request, yr, mth):
 #     response = HttpResponse()
 #     mth_name = calendar.month_name[mth]
@@ -35,16 +40,23 @@ def index(request):
 #     response.write(heading1)
 #     return response
 
+# Lab 6 | Part 1 | d
 def about(request, yr, mth):
     mth_name = calendar.month_name[mth]
-    return render(request, 'myapp/about.html',{'yr':yr,'mth_name':mth_name})    #Yes, I am passing Year and month te template which has been taken as a input fromm the user, further the month name is calculated based on month number entered
+    return render(request, 'myapp/about.html',{'yr':yr,'mth_name':mth_name})
 
+    # Answer for part d, iii
+    #Yes, I am passing Year and month te template which has been taken as a input fromm the user, further the month name is calculated based on month number entered
+
+# LAB 6 | Part 1 | e.
 class Detail(View):     #CBV for Part 3
 
     def get(self, request, type_no):
         selected_type = Type.objects.get(pk=type_no)
         items = Item.objects.filter(type=selected_type)
-        return render(request, 'myapp/detail.html', {'selected_type': selected_type,'items': items})        #"""To Answer part 5 ofe part, i am passing the selected_type and items list as variable to the template, these would be later traversed and displayed in the template."""
+        return render(request, 'myapp/detail.html', {'selected_type': selected_type,'items': items})
+#"""To Answer part 5 ofe part, i am passing the selected_type and items list as variable to the template, these would be later traversed and displayed in the template."""
+
         # response = HttpResponse()
         #
         # for i in items:
