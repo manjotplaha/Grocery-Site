@@ -15,7 +15,7 @@
 {% else %}
 <strong> None of the types is available! </strong>
 {% endif %}
-<p><a href="{% url 'about' 2024 12   %}">About Page (with hard coded year and month)</a></p>
-<p><a href="{% url 'aboutUs'    %}">About Page (without hard coded year and month)</a></p>
+<p><a href="{% url 'about' 2024 12   %}">About Page (url namespaced with hard coded year and month)</a></p>
+<p><a href="{% url 'aboutUs'    %}">About Page (url namespaced without hard coded year and month)</a></p>
 </body>
 </html>
