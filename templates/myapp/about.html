@@ -1,14 +1,7 @@
-<!DOCTYPE html>
-<html>
-<head lang="en">
-<meta charset="UTF-8">
-<title> Online Grocery Store </title>
-</head>
+{% extends 'myapp/base.html' %}
 
-<body>
-{#<p><a href=" http://127.0.0.1:8000//about">About Page</a></p>#}
-<p><a href="{% url 'index' %}">Index Page with namespacing</a></p>
-<p>This is an Online Grocery Store {{ yr }} {{mth_name}} </p>
-<p><a href="http://localhost:8000/">Index Page with hard code</a></p>
-</body>
-</html>
+{% block body_block %}
+<p><a href="{% url 'myapp:index' %}">Index Page with namespacing</a></p>
+<p>This is an Online Grocery Store {{ yr }} </p>
+<a href="{% url 'myapp:index'%}">{{ mth_name }}</a>
+{% endblock %}

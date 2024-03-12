@@ -24,12 +24,17 @@ class Item(models.Model):
     stock = models.PositiveIntegerField(default=100)
     available = models.BooleanField(default=True)
     description = models.TextField(default='Description')
+    interested = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return self.name
 
     class Meta:
         ordering = ['id']
+
+    def topup(self):
+        self.stock += 50
+        return self.save()
 # class Client(User):
 #     CITY_CHOICES = [
 #         ('San Francisco', 'San'),
@@ -70,7 +75,7 @@ class OrderItem(models.Model):
     date = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.item.name
+        return f" {self.item.name} by  {self.client.get_full_name()} {self.quantity} units where status is {self.get_status_display()}"
 
     class Meta:
         ordering = ['id']

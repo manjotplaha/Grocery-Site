@@ -1,11 +1,6 @@
-<!DOCTYPE html>
-<html>
-<head lang="en">
-<meta charset="UTF-8">
-<title> Online Grocery Store </title>
-</head>
+{% extends 'myapp/base.html' %}
 
-<body>
+{% block body_block %}
 <strong>{{ selected_type }}</strong>
 {% if items %}
     {% for item in items  %}
@@ -15,6 +10,5 @@
     <br>
     <strong> No items in this Category! </strong>
 {% endif %}
-<p><a href="{% url 'index'%}">Index Page</a></p>
-</body>
-</html>
+<p><a href="{% url 'myapp:index'%}">Index Page</a></p>
+{% endblock %}

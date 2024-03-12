@@ -1,10 +1,11 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from django.views import View
 
 from .models import Type, Item, TeamMembers
 import calendar
 from django.shortcuts import render
+from .forms import ItemSearchForm, OrderItemForm, InterestForm
 
 
 # Create your views here.
@@ -48,6 +49,7 @@ def about(request, yr, mth):
     # Answer for part d, iii
     #Yes, I am passing Year and month te template which has been taken as a input fromm the user, further the month name is calculated based on month number entered
 
+
 # LAB 6 | Part 1 | e.
 class Detail(View):     #CBV for Part 3
 
@@ -70,6 +72,7 @@ def aboutUs(request):
     response.write(heading1)
     return response
 
+
 # # Comments explaining the differences during conversion:
 #
 # # 1. Function-Based View (FBV) is a simple function that takes a request and returns a response.
@@ -85,3 +88,73 @@ class TeamMembersView(View):
     def get(self, request):
         details = TeamMembers.objects.all().order_by('-first_name')
         return render(request, 'myapp/teamDetailView.html',{'details':details})
+
+def items(request):
+    itemlist = Item.objects.all().order_by('id')[:20]
+    return render(request, 'myapp/items.html', {"itemlist":itemlist})
+
+# def placeorder(request):
+#     return render(request, 'myapp/placeorder.html')
+
+def placeorder(request):
+    msg = ''
+    itemlist = Item.objects.all()
+
+    if request.method == 'POST':
+        form = OrderItemForm(request.POST)
+        if form.is_valid():
+            order = form.save(commit=False)
+            if order.quantity <= order.item.stock:
+                # order.save()
+                order.item.stock -= order.quantity
+                order.item.save()
+                msg = 'Your order has been placed successfully.'
+            else:
+                msg = 'We do not have sufficient stock to fill your order.'
+                return render(request, 'myapp/order_response.html', {'msg': msg})
+    else:
+        form = OrderItemForm()
+    return render(request, 'myapp/placeorder.html', {'form': form, 'msg': msg, 'itemlist': itemlist})
+
+
+def item_search(request):
+    price = None
+    if request.method == 'POST':
+        form = ItemSearchForm(request.POST)
+        if form.is_valid():
+            item = form.cleaned_data['item']
+            price = item.price
+    else:
+        form = ItemSearchForm()
+
+    return render(request, 'myapp/item_search.html', {'form': form, 'price': price})
+
+
+def itemdetail(request, item_id):
+    # Retrieve the item based on item_id
+    item = get_object_or_404(Item, pk=item_id)
+
+    # Initialize message variable
+    message = ''
+
+    # Check if the item is available
+    if not item.available:
+        message = 'This item is currently not available.'
+
+    # If a POST request, process the interest form
+    if request.method == 'POST':
+        form = InterestForm(request.POST)
+        if form.is_valid():
+            # Save the form data (record user interest)
+            form.save()
+            # Update interested count for the item
+            item.interested += 1
+            item.save()
+            # Redirect or display a success message
+            return render(request, 'myapp/itemdetail.html',
+                          {'item': item, 'form': form, 'message': 'Thank you for showing your interest!'})
+    else:
+        # Create a new instance of the interest form
+        form = InterestForm()
+
+    return render(request, 'myapp/itemdetail.html', {'item': item, 'form': form, 'message': message})

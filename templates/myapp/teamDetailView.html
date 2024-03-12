@@ -1,11 +1,7 @@
-<!DOCTYPE html>
-<html>
-<head lang="en">
-<meta charset="UTF-8">
-<title> Group 3 | Team Members</title>
-</head>
+{% extends 'myapp/base.html' %}
 
-<body>
+{% block body_block %}
+    
 <h3>Group 3 Team Members</h3>
 {% if details %}
     {% for detail in details  %}
@@ -18,6 +14,7 @@
     <br>
     <strong> No items in this Category! </strong>
 {% endif %}
-<p><a href="{% url 'index'%}">Index Page</a></p>
-</body>
-</html>
+<p><a href="{% url 'myapp:index'%}">Index Page</a></p>
+<p><a href=" http://127.0.0.1:8000/about/2024/12">About Page (Hardcoded with year and month)</a></p>
+
+{% endblock %}
