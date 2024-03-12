@@ -18,3 +18,30 @@ h1{
 body{
     background-color: beige;
 }
+
+nav {
+    text-align: center;
+    /*background-color: darkgray;*/
+    /*color: #fff;*/
+    padding: 10px;
+}
+
+nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+nav li {
+    display: inline;
+    margin-right: 20px;
+}
+
+nav a {
+    color: #000000;
+    text-decoration: none;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}

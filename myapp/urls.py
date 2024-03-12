@@ -8,8 +8,8 @@ app_name = 'myapp'
 urlpatterns = [
 
     path('', views.index, name='index'),
-    path('about/<int:yr>/<int:mth>/', views.about, name='about'),
-    path('aboutUs/', views.aboutUs, name='aboutUs'),
+    path('about/', views.about, name='about'),
+    # path('aboutUs/', views.aboutUs, name='aboutUs'),
     path('<int:type_no>/',Detail.as_view(),name='detail'),       #for CBV
     path('team/',TeamMembersView.as_view(),name='team'),                #LAB 6 PART 2
     path('items/', views.items, name='items'),

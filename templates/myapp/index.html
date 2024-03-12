@@ -1,6 +1,10 @@
 {% extends 'myapp/base.html' %}
+{% load static %}
 
 {% block body_block %}
+    <div>
+    <img src="{% static 'myapp/banner.jpg' %}" style="object-fit: cover; width: 100%; height: 400px;">
+    </div>
 
 {% if type_list %}
     <h2> List of Types </h2>
@@ -12,8 +16,8 @@
 {% else %}
 <strong> None of the types is available! </strong>
 {% endif %}
-<p><a href="{% url 'myapp:about' 2024 12   %}">About Page (url namespaced with hard coded year and month)</a></p>
-<p><a href="{% url 'myapp:aboutUs'%}">About Page (url namespaced without hard coded year and month)</a></p>
-<p><a href=" http://127.0.0.1:8000/aboutUs">About Page (Hardcoded without year and month)</a></p>
-<p><a href=" http://127.0.0.1:8000/about/2024/12">About Page (Hardcoded with year and month)</a></p>
+{#<p><a href="{% url 'myapp:about' 2024 12   %}">About Page (url namespaced with hard coded year and month)</a></p>#}
+{#<p><a href="{% url 'myapp:aboutUs'%}">About Page (url namespaced without hard coded year and month)</a></p>#}
+{#<p><a href=" http://127.0.0.1:8000/aboutUs">About Page (Hardcoded without year and month)</a></p>#}
+{#<p><a href=" http://127.0.0.1:8000/about/2024/12">About Page (Hardcoded with year and month)</a></p>#}
 {% endblock %}

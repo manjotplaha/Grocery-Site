@@ -42,9 +42,9 @@ def index(request):
 #     return response
 
 # Lab 6 | Part 1 | d
-def about(request, yr, mth):
-    mth_name = calendar.month_name[mth]
-    return render(request, 'myapp/about.html',{'yr':yr,'mth_name':mth_name})
+def about(request):
+    # mth_name = calendar.month_name[mth]
+    return render(request, 'myapp/about.html')
 
     # Answer for part d, iii
     #Yes, I am passing Year and month te template which has been taken as a input fromm the user, further the month name is calculated based on month number entered
@@ -145,8 +145,11 @@ def itemdetail(request, item_id):
     if request.method == 'POST':
         form = InterestForm(request.POST)
         if form.is_valid():
-            # Save the form data (record user interest)
-            form.save()
+            # interested = form.cleaned_data['interested']
+            # quantity = form.cleaned_data['quantity']
+            # comments = form.cleaned_data['comments']
+            # # Save the form data (record user interest)
+            # form.save()
             # Update interested count for the item
             item.interested += 1
             item.save()
