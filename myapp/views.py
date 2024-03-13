@@ -93,9 +93,6 @@ def items(request):
     itemlist = Item.objects.all().order_by('id')[:20]
     return render(request, 'myapp/items.html', {"itemlist":itemlist})
 
-# def placeorder(request):
-#     return render(request, 'myapp/placeorder.html')
-
 def placeorder(request):
     msg = ''
     itemlist = Item.objects.all()
@@ -145,13 +142,8 @@ def itemdetail(request, item_id):
     if request.method == 'POST':
         form = InterestForm(request.POST)
         if form.is_valid():
-            # interested = form.cleaned_data['interested']
-            # quantity = form.cleaned_data['quantity']
-            # comments = form.cleaned_data['comments']
-            # # Save the form data (record user interest)
-            # form.save()
-            # Update interested count for the item
-            item.interested += 1
+            interested = int(form.cleaned_data['interested'])
+            item.interested += interested
             item.save()
             # Redirect or display a success message
             return render(request, 'myapp/itemdetail.html',

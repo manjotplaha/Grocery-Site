@@ -16,8 +16,16 @@
 {% else %}
 <strong> None of the types is available! </strong>
 {% endif %}
-{#<p><a href="{% url 'myapp:about' 2024 12   %}">About Page (url namespaced with hard coded year and month)</a></p>#}
-{#<p><a href="{% url 'myapp:aboutUs'%}">About Page (url namespaced without hard coded year and month)</a></p>#}
-{#<p><a href=" http://127.0.0.1:8000/aboutUs">About Page (Hardcoded without year and month)</a></p>#}
-{#<p><a href=" http://127.0.0.1:8000/about/2024/12">About Page (Hardcoded with year and month)</a></p>#}
+    <h2 style="text-align: center">Featured Items</h2>
+    <div class = "pic-container" style="display: flex;justify-content: center;">
+    <div class = "img-desc" style="display: inline-block;text-align: center;margin: 10px;">
+        <img src="{% static 'myapp/Cookies.jpg' %}" alt="Cookies" style="max-width: 150px; max-height: 150px;">
+        <p>Description: Cookies</p>
+    </div>
+        <div class = "img-desc" style="display: inline-block; text-align: center;margin: 10px;">
+        <img src="{% static 'myapp/Handwash.jpg' %}" alt="Handwash" style="max-width: 150px; max-height: 150px;">
+        <p>Description: Handwash</p>
+    </div>
+
+</div>
 {% endblock %}
