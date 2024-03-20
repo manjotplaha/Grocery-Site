@@ -2,10 +2,14 @@
 {% load static %}
 
 {% block body_block %}
+    
     <div>
     <img src="{% static 'myapp/banner.jpg' %}" style="object-fit: cover; width: 100%; height: 400px;">
     </div>
-
+<a href="{% url 'myapp:signup' %}">Sign Up</a>
+    <br>
+    <br>
+    <a href="{% url 'myapp:logout' %}">LogOut</a>
 {% if type_list %}
     <h2> List of Types </h2>
     <ol>
@@ -26,6 +30,6 @@
         <img src="{% static 'myapp/Handwash.jpg' %}" alt="Handwash" style="max-width: 150px; max-height: 150px;">
         <p>Description: Handwash</p>
     </div>
-
 </div>
+    <h1>Session Count - {{ session_count }}</h1>
 {% endblock %}

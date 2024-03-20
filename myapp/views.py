@@ -1,12 +1,67 @@
-from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse, HttpResponseRedirect
 from django.views import View
-
-from .models import Type, Item, TeamMembers
-import calendar
 from django.shortcuts import render
-from .forms import ItemSearchForm, OrderItemForm, InterestForm
+from .models import Type, Item, TeamMembers, Client, OrderItem
+from django.shortcuts import get_object_or_404
+import calendar
+from .forms import OrderItemForm, InterestForm,ItemSearchForm
+import datetime
+from django.contrib.auth.forms import UserCreationForm
+from django.urls import reverse_lazy, reverse
+from django.views.generic import CreateView
+from django.shortcuts import redirect
 
+class SignUpView(View):
+    template_name = 'registration/signup.html'
+
+    def get(self, request):
+        form = UserCreationForm()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request):
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            # Redirect to the login page once you complete step 3
+            return redirect('myapp:login')
+        return render(request, self.template_name, {'form': form})
+
+def user_login(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(username=username, password=password)
+        if user:
+            if user.is_active:
+                login(request, user)
+                return HttpResponseRedirect(reverse('myapp:index'))
+            else:
+                return HttpResponse('Your account is disabled.')
+        else:
+            return HttpResponse('Invalid login details.')
+    else:
+        return render(request, 'registration/login.html')
+
+@login_required
+def user_logout(request):
+    logout(request)
+    return HttpResponseRedirect(reverse('myapp:index'))
+
+
+
+@login_required
+def myorders(request):
+    user = request.user
+    if hasattr(user, 'client'):
+        client = user
+        orders = OrderItem.objects.filter(client=client)
+        return render(request, 'myapp/myorders.html', {'orders': orders})
+    else:
+        message = 'You are not a registered client!'
+        return render(request, 'myapp/myorders.html', {'message': message})
 
 # Create your views here.
 # def index(request):
@@ -25,10 +80,34 @@ from .forms import ItemSearchForm, OrderItemForm, InterestForm
 #     return response
 
 
-def index(request):
-    type_list = Type.objects.all().order_by('id')[:10]
-    return render(request, 'myapp/index.html', {'type_list': type_list})
+# def index(request):
+#
+#     type_list = Type.objects.all().order_by('id')[:10]
+#     # Session counting
+#     session_count = request.session.get('count', 0)
+#     request.session['count'] = session_count + 1
+#
+#     # Setting cookie
+#     response = HttpResponse(render(request, 'myapp/index.html', {'session_count': session_count, 'type_list': type_list}))
+#     response.set_cookie('cookie_counter', 'value', max_age=10)  # Set a cookie that expires in 10 seconds
+#
+#     return response
 
+def index(request):
+    type_list = Type.objects.all().order_by('id')
+    session_count = int(request.COOKIES.get('cookie_counter', 0))
+    session_count += 1
+    response = HttpResponse(render(request, 'myapp/index.html', {'session_count': session_count, 'type_list': type_list}))
+    response.set_cookie('cookie_counter', str(session_count), max_age=10)
+    return response
+
+def about(request):
+    welcome_message = "This is an Online Grocery Store."
+    session_count = int(request.COOKIES.get('cookie_counter2', 0))
+    session_count += 1
+    response = HttpResponse(render(request, 'myapp/about.html', {'session_count': session_count, 'welcome_message':welcome_message}))
+    response.set_cookie('cookie_counter2', str(session_count), max_age=10)
+    return response
 # Lab 6 | PART 1| iii
 
 # Yes, we are passing type_list as context variable, this is an argument which is passed on to the template
@@ -42,9 +121,9 @@ def index(request):
 #     return response
 
 # Lab 6 | Part 1 | d
-def about(request):
-    # mth_name = calendar.month_name[mth]
-    return render(request, 'myapp/about.html')
+# def about(request):
+#     # mth_name = calendar.month_name[mth]
+#     return render(request, 'myapp/about.html')
 
     # Answer for part d, iii
     #Yes, I am passing Year and month te template which has been taken as a input fromm the user, further the month name is calculated based on month number entered
@@ -95,6 +174,9 @@ def items(request):
 
 def placeorder(request):
     msg = ''
+    ordered_item_name = ''
+    ordered_quantity = ''
+    client_name = ''
     itemlist = Item.objects.all()
 
     if request.method == 'POST':
@@ -102,16 +184,20 @@ def placeorder(request):
         if form.is_valid():
             order = form.save(commit=False)
             if order.quantity <= order.item.stock:
-                # order.save()
+                order.save()
+                ordered_item_name = order.item.name
+                ordered_quantity = order.quantity
+                client_name = order.client.username
                 order.item.stock -= order.quantity
                 order.item.save()
                 msg = 'Your order has been placed successfully.'
+                # msg = '{{ordered_quantity}} {ordered_item_name} has been placed successfully by {client_name}'
             else:
-                msg = 'We do not have sufficient stock to fill your order.'
+                # msg = 'We do not have sufficient stock to fill your order.'
                 return render(request, 'myapp/order_response.html', {'msg': msg})
     else:
         form = OrderItemForm()
-    return render(request, 'myapp/placeorder.html', {'form': form, 'msg': msg, 'itemlist': itemlist})
+    return render(request, 'myapp/placeorder.html', {'form': form, 'msg': msg, 'itemlist': itemlist, 'ordered_item_name':ordered_item_name, 'ordered_quantity':ordered_quantity,'client_name':client_name})
 
 
 def item_search(request):
@@ -128,7 +214,6 @@ def item_search(request):
 
 
 def itemdetail(request, item_id):
-    # Retrieve the item based on item_id
     item = get_object_or_404(Item, pk=item_id)
 
     # Initialize message variable

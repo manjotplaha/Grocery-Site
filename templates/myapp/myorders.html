@@ -1,0 +1,15 @@
+{% extends 'myapp/base.html' %}
+
+{% block body_block %}
+  <h2>My Orders</h2>
+  {% if orders %}
+    <ul>
+      {% for order in orders %}
+        <li>{{ order }}</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>{{ message }}</p>
+      <p>Click <a href="{% url 'myapp:signup' %}">here</a> to register and place an order.</p>
+  {% endif %}
+{% endblock %}

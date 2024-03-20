@@ -6,6 +6,7 @@ margin: 15px;
 h1{
     font-style: italic;
     font-size: medium;
+    text-align: center;
 }
 
 *{
@@ -43,3 +44,4 @@ nav a {
 nav a:hover {
     text-decoration: underline;
 }
+

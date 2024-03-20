@@ -22,9 +22,9 @@ class OrderItemForm(forms.ModelForm):
         model = OrderItem
         fields = ['item', 'client', 'quantity']
 
-    def __init__(self, *args, **kwargs):
-        super(OrderItemForm, self).__init__(*args, **kwargs)
-        self.fields['client'].label = 'Client Name'
+    # def __init__(self, *args, **kwargs):
+    #     super(OrderItemForm, self).__init__(*args, **kwargs)
+    #     self.fields['client'].label = 'Client Name'
 
 class InterestForm(forms.Form):
     INTEREST_CHOICES = (

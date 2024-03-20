@@ -17,6 +17,7 @@
         {% endfor %}
     </ul>
     {% if msg %}
-        <p>{{ msg }}</p>
+        <p>{{ msg }}{{ ordered_item_name }}{{ ordered_quantity }}{{ client_name }}</p>
+        
     {% endif %}
 {% endblock %}
