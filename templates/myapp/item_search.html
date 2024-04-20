@@ -1,14 +1,44 @@
+{#{% extends 'myapp/base.html' %}#}
+{#{% block body_block %}#}
+{#  #}
+{#    <h1>Order Item Form</h1>#}
+{#    <form method="post">#}
+{#        {% csrf_token %}#}
+{#        {{ form.as_table }}#}
+{#        <button type="submit">Filter Items</button>#}
+{#    </form>#}
+{#     {% if price %}#}
+{#    <p>Price: {{ price }}</p>#}
+{#    {% endif %}#}
+{#    <ul>#}
+{#        {% for item in items %}#}
+{#        <li>{{ item.name }} - {{ item.price }}</li>#}
+{#        {% endfor %}#}
+{#    </ul>#}
+{#{% endblock %}#}
+
 {% extends 'myapp/base.html' %}
 {% block body_block %}
-  
-    <h1>Order Item Form</h1>
+
+    <h1>Item Search</h1>
     <form method="post">
         {% csrf_token %}
-        {{ form.as_table }}
+        <label for="id_type">Category:</label>
+        <select name="type" id="id_type">
+            {% for category in categories %}
+                <option value="{{ category.id }}">{{ category.name }}</option>
+            {% endfor %}
+        </select>
         <button type="submit">Filter Items</button>
     </form>
-     {% if price %}
-    <p>Price: {{ price }}</p>
+    
+    {% if items %}
+    <h2>Items in Selected Category:</h2>
+    <ul>
+        {% for item in items %}
+        <li>{{ item.name }} - {{ item.price }}</li>
+        {% endfor %}
+    </ul>
     {% endif %}
 
 {% endblock %}

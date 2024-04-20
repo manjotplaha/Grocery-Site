@@ -14,20 +14,17 @@ from django.views.generic import CreateView
 from django.shortcuts import redirect
 
 class SignUpView(View):
-    template_name = 'registration/signup.html'
-
     def get(self, request):
         form = UserCreationForm()
-        return render(request, self.template_name, {'form': form})
+        return render(request, 'registration/signup.html',{'form':form})
 
-    def post(self, request):
-        form = UserCreationForm(request.POST)
+    def post(self,request):
+        form=UserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
             login(request, user)
-            # Redirect to the login page once you complete step 3
             return redirect('myapp:login')
-        return render(request, self.template_name, {'form': form})
+        return render(request,'registration/signup.html',{'form':form})
 
 def user_login(request):
     if request.method == 'POST':
@@ -49,8 +46,6 @@ def user_login(request):
 def user_logout(request):
     logout(request)
     return HttpResponseRedirect(reverse('myapp:index'))
-
-
 
 @login_required
 def myorders(request):
@@ -79,23 +74,11 @@ def myorders(request):
 #         response.write(para)
 #     return response
 
-
-# def index(request):
-#
-#     type_list = Type.objects.all().order_by('id')[:10]
-#     # Session counting
-#     session_count = request.session.get('count', 0)
-#     request.session['count'] = session_count + 1
-#
-#     # Setting cookie
-#     response = HttpResponse(render(request, 'myapp/index.html', {'session_count': session_count, 'type_list': type_list}))
-#     response.set_cookie('cookie_counter', 'value', max_age=10)  # Set a cookie that expires in 10 seconds
-#
-#     return response
-
 def index(request):
     type_list = Type.objects.all().order_by('id')
     session_count = int(request.COOKIES.get('cookie_counter', 0))
+
+    # session_count = request.session.get('session_count',0)+1
     session_count += 1
     response = HttpResponse(render(request, 'myapp/index.html', {'session_count': session_count, 'type_list': type_list}))
     response.set_cookie('cookie_counter', str(session_count), max_age=10)
@@ -104,6 +87,8 @@ def index(request):
 def about(request):
     welcome_message = "This is an Online Grocery Store."
     session_count = int(request.COOKIES.get('cookie_counter2', 0))
+    if(session_count >=3):
+        session_count = 0
     session_count += 1
     response = HttpResponse(render(request, 'myapp/about.html', {'session_count': session_count, 'welcome_message':welcome_message}))
     response.set_cookie('cookie_counter2', str(session_count), max_age=10)
@@ -146,7 +131,13 @@ class Detail(View):     #CBV for Part 3
         # return response
 
 def aboutUs(request):
+    visits = request.session.get('visits', 0)
+    if visits > 3:
+        visits = 1
+    visits += 1
+
     response = HttpResponse()
+    response.set_cookie('visits', str(visits))
     heading1 = '<p> This is an Online Grocery Store </p>'
     response.write(heading1)
     return response
@@ -191,7 +182,12 @@ def placeorder(request):
                 order.item.stock -= order.quantity
                 order.item.save()
                 msg = 'Your order has been placed successfully.'
+
                 # msg = '{{ordered_quantity}} {ordered_item_name} has been placed successfully by {client_name}'
+                # Set a cookie for the order placed
+                # response = render(request, 'myapp/order_response.html', {'msg': msg})
+                # response.set_cookie('order_placed', 'true')
+                # return response
             else:
                 # msg = 'We do not have sufficient stock to fill your order.'
                 return render(request, 'myapp/order_response.html', {'msg': msg})
@@ -211,7 +207,6 @@ def item_search(request):
         form = ItemSearchForm()
 
     return render(request, 'myapp/item_search.html', {'form': form, 'price': price})
-
 
 def itemdetail(request, item_id):
     item = get_object_or_404(Item, pk=item_id)
@@ -238,3 +233,28 @@ def itemdetail(request, item_id):
         form = InterestForm()
 
     return render(request, 'myapp/itemdetail.html', {'item': item, 'form': form, 'message': message})
+
+
+# # Check if session_count exceeds 4
+#     if session_count > 4:
+#         print("Session count exceeded 4")
+#
+#     # Reset session_count to 0 if it equals 4
+#     if session_count == 4:
+#         session_count = 0
+#         print("Session count reset to 0")
+
+# def item_search(request):
+#     categories = Type.objects.all()
+#     items = None
+#
+#     if request.method == 'POST':
+#         form = ItemSearchForm(request.POST)
+#         if form.is_valid():
+#             type_id = form.cleaned_data['type']
+#             selected_category = Type.objects.get(id=type_id)
+#             items = Item.objects.filter(type=selected_category)
+#     else:
+#         form = ItemSearchForm()
+#
+#     return render(request, 'myapp/item_search.html', {'form': form, 'items': items, 'categories': categories})
